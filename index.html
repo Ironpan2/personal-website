@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ironpan Softworks | CEO</title>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <style>
+            :root {
+                --bg: #050505;
+                --accent: #ffffff;
+                --text-main: #ffffff;
+                --text-dim: #888888;
+                --glow: rgba(255, 255, 255, 0.1);
+                --card-bg: rgba(255, 255, 255, 0.03);
+                --border: rgba(255, 255, 255, 0.1);
+                --grid-stroke: rgba(255, 255, 255, 0.08);
+            }
+
+            [data-theme="light"] {
+                --bg: #ffffff;
+                --accent: #000000;
+                --text-main: #000000;
+                --text-dim: #666666;
+                --glow: rgba(0, 0, 0, 0.05);
+                --card-bg: rgba(0, 0, 0, 0.02);
+                --border: rgba(0, 0, 0, 0.1);
+                --grid-stroke: rgba(0, 0, 0, 0.05);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Inter", sans-serif;
+            }
+
+            body {
+                background-color: var(--bg);
+                color: var(--text-main);
+                min-height: 100vh;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 80px 20px;
+                transition: background-color 0.5s ease;
+            }
+
+            .grid-bg {
+                position: fixed;
+                inset: 0;
+                z-index: -1;
+                background-image:
+                    linear-gradient(var(--grid-stroke) 1px, transparent 1px),
+                    linear-gradient(
+                        90deg,
+                        var(--grid-stroke) 1px,
+                        transparent 1px
+                    );
+                background-size: 45px 45px;
+                mask-image: radial-gradient(
+                    circle at center,
+                    black 0%,
+                    transparent 90%
+                );
+                -webkit-mask-image: radial-gradient(
+                    circle at center,
+                    black 0%,
+                    transparent 90%
+                );
+            }
+
+            .orb {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 70vw;
+                height: 70vw;
+                background: radial-gradient(
+                    circle,
+                    var(--glow) 0%,
+                    transparent 70%
+                );
+                z-index: -2;
+                filter: blur(100px);
+                transform: translate(-50%, -50%);
+            }
+
+            #theme-toggle {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                color: var(--text-main);
+                padding: 12px;
+                border-radius: 14px;
+                backdrop-filter: blur(10px);
+                z-index: 100;
+                cursor: pointer;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 700px;
+                padding: 60px 40px;
+                background: var(--card-bg);
+                backdrop-filter: blur(40px);
+                -webkit-backdrop-filter: blur(40px);
+                border: 1px solid var(--border);
+                border-radius: 32px;
+                text-align: center;
+                box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+            }
+
+            .avatar {
+                width: 90px;
+                height: 90px;
+                background: var(--text-main);
+                color: var(--bg);
+                border-radius: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 2rem;
+                font-weight: 900;
+                margin: 0 auto 25px;
+            }
+
+            h1 {
+                font-size: 3rem;
+                font-weight: 800;
+                letter-spacing: -2px;
+                margin-bottom: 5px;
+            }
+            .badge {
+                color: var(--text-dim);
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 40px;
+                display: block;
+            }
+
+            .card {
+                background: rgba(var(--text-main), 0.01);
+                border: 1px solid var(--border);
+                padding: 24px;
+                border-radius: 20px;
+                margin-bottom: 15px;
+                text-align: left;
+                transition: 0.3s ease;
+            }
+            .card:hover {
+                border-color: var(--text-main);
+                background: var(--card-bg);
+            }
+            .card h2 {
+                font-size: 0.9rem;
+                margin-bottom: 8px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .card p {
+                color: var(--text-dim);
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .footer-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: center;
+                margin-top: 30px;
+            }
+            .btn {
+                padding: 15px 30px;
+                border-radius: 15px;
+                text-decoration: none;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                transition: 0.3s;
+            }
+            .btn-primary {
+                background: var(--text-main);
+                color: var(--bg);
+            }
+            .btn-secondary {
+                border: 1px solid var(--border);
+                color: var(--text-main);
+            }
+            .btn:hover {
+                transform: translateY(-3px);
+            }
+
+            #discord-status {
+                margin-top: 30px;
+                font-size: 0.75rem;
+                color: var(--text-dim);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            .dot {
+                width: 8px;
+                height: 8px;
+                background: #444;
+                border-radius: 50%;
+            }
+            .online {
+                background: #43b581;
+                box-shadow: 0 0 10px #43b581;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="grid-bg"></div>
+        <div class="orb"></div>
+
+        <button id="theme-toggle"><i data-lucide="moon"></i></button>
+
+        <div class="container">
+            <header>
+                <div class="avatar">IP</div>
+                <h1>ironpan2</h1>
+                <span class="badge">CEO @ Ironpan Softworks</span>
+            </header>
+
+            <div class="card">
+                <h2><i data-lucide="user"></i> ABOUT</h2>
+                <p>
+                    Hello I am ironpan2. I am a master paster and skider. I am
+                    an expert of pasting from random github repos and leaked
+                    source code. I know python and I am learning rust.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><i data-lucide="terminal"></i> POLNAREFFWARE</h2>
+                <p>
+                    Developing a high-performance Roblox external. Currently in
+                    active development. Join the Discord for updates and beta
+                    access.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><i data-lucide="gamepad-2"></i> INTERESTS</h2>
+                <p>
+                    CS2 • ROBLOX • STRAFTAT • Reverse Engineering • Game
+                    Cheating.
+                </p>
+            </div>
+
+            <div class="footer-actions">
+                <a
+                    href="https://discord.gg/BGmDcqwW9g"
+                    class="btn btn-primary"
+                    target="_blank"
+                    ><i data-lucide="message-square"></i> DISCORD</a
+                >
+                <a href="#" class="btn btn-secondary"
+                    ><i data-lucide="github"></i> GITHUB</a
+                >
+            </div>
+
+            <div id="discord-status">
+                <div class="dot" id="dot"></div>
+                <span id="status-text">CONNECTING...</span>
+            </div>
+        </div>
+
+        <script>
+            lucide.createIcons();
+
+            const toggle = document.getElementById("theme-toggle");
+            let isDark = true;
+            toggle.addEventListener("click", () => {
+                isDark = !isDark;
+                document.body.setAttribute(
+                    "data-theme",
+                    isDark ? "dark" : "light",
+                );
+                toggle.innerHTML = isDark
+                    ? '<i data-lucide="moon"></i>'
+                    : '<i data-lucide="sun"></i>';
+                lucide.createIcons();
+            });
+
+            const DISCORD_ID = "1226159833779011636";
+            async function getStatus() {
+                try {
+                    const r = await fetch(
+                        `https://api.lanyard.rest/v1/users/${DISCORD_ID}`,
+                    );
+                    const d = await r.json();
+                    if (d.success) {
+                        const s = d.data.discord_status;
+                        document.getElementById("status-text").innerText =
+                            `CEO STATUS: ${s.toUpperCase()}`;
+                        document.getElementById("dot").className =
+                            s !== "offline" ? "dot online" : "dot";
+                    }
+                } catch (e) {
+                    console.error("Lanyard Error");
+                }
+            }
+            getStatus();
+            setInterval(getStatus, 15000);
+        </script>
+    </body>
+</html>
