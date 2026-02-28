@@ -1,316 +1,188 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Ironpan Softworks | CEO</title>
-        <script src="https://unpkg.com/lucide@latest"></script>
-        <style>
-            :root {
-                --bg: #050505;
-                --accent: #ffffff;
-                --text-main: #ffffff;
-                --text-dim: #888888;
-                --glow: rgba(255, 255, 255, 0.1);
-                --card-bg: rgba(255, 255, 255, 0.03);
-                --border: rgba(255, 255, 255, 0.1);
-                --grid-stroke: rgba(255, 255, 255, 0.08);
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ironpan OS | Terminal</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --text: #ffffff; /* Changed to stark white */
+            --dim: #cccccc; /* Light grey for standard output */
+            --font: 'Courier New', Courier, monospace;
+        }
 
-            [data-theme="light"] {
-                --bg: #ffffff;
-                --accent: #000000;
-                --text-main: #000000;
-                --text-dim: #666666;
-                --glow: rgba(0, 0, 0, 0.05);
-                --card-bg: rgba(0, 0, 0, 0.02);
-                --border: rgba(0, 0, 0, 0.1);
-                --grid-stroke: rgba(0, 0, 0, 0.05);
-            }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow-y: auto; 
+            scrollbar-width: thin;
+            scrollbar-color: var(--dim) var(--bg);
+        }
 
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: "Inter", sans-serif;
-            }
+        #terminal {
+            white-space: pre-wrap;
+            display: flex;
+            flex-direction: column;
+        }
 
-            body {
-                background-color: var(--bg);
-                color: var(--text-main);
-                min-height: 100vh;
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 80px 20px;
-                transition: background-color 0.5s ease;
-            }
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
 
-            .grid-bg {
-                position: fixed;
-                inset: 0;
-                z-index: -1;
-                background-image:
-                    linear-gradient(var(--grid-stroke) 1px, transparent 1px),
-                    linear-gradient(
-                        90deg,
-                        var(--grid-stroke) 1px,
-                        transparent 1px
-                    );
-                background-size: 45px 45px;
-                mask-image: radial-gradient(
-                    circle at center,
-                    black 0%,
-                    transparent 90%
-                );
-                -webkit-mask-image: radial-gradient(
-                    circle at center,
-                    black 0%,
-                    transparent 90%
-                );
-            }
+        .prompt {
+            color: var(--text);
+            margin-right: 10px;
+            font-weight: bold;
+        }
 
-            .orb {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                width: 70vw;
-                height: 70vw;
-                background: radial-gradient(
-                    circle,
-                    var(--glow) 0%,
-                    transparent 70%
-                );
-                z-index: -2;
-                filter: blur(100px);
-                transform: translate(-50%, -50%);
-            }
+        #command-input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 1rem;
+            outline: none;
+            flex-grow: 1;
+        }
 
-            #theme-toggle {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: var(--card-bg);
-                border: 1px solid var(--border);
-                color: var(--text-main);
-                padding: 12px;
-                border-radius: 14px;
-                backdrop-filter: blur(10px);
-                z-index: 100;
-                cursor: pointer;
-            }
+        .output {
+            margin-top: 5px;
+            color: var(--dim);
+            line-height: 1.4;
+        }
 
-            .container {
-                width: 100%;
-                max-width: 700px;
-                padding: 60px 40px;
-                background: var(--card-bg);
-                backdrop-filter: blur(40px);
-                -webkit-backdrop-filter: blur(40px);
-                border: 1px solid var(--border);
-                border-radius: 32px;
-                text-align: center;
-                box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
-            }
+        .command-text {
+            color: var(--text);
+            font-weight: bold;
+        }
 
-            .avatar {
-                width: 90px;
-                height: 90px;
-                background: var(--text-main);
-                color: var(--bg);
-                border-radius: 28px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 2rem;
-                font-weight: 900;
-                margin: 0 auto 25px;
-            }
+        .system-msg {
+            color: #ffffff;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
 
-            h1 {
-                font-size: 3rem;
-                font-weight: 800;
-                letter-spacing: -2px;
-                margin-bottom: 5px;
-            }
-            .badge {
-                color: var(--text-dim);
-                font-size: 0.75rem;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-                margin-bottom: 40px;
-                display: block;
-            }
+        /* CRT Scanline effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
 
-            .card {
-                background: rgba(var(--text-main), 0.01);
-                border: 1px solid var(--border);
-                padding: 24px;
-                border-radius: 20px;
-                margin-bottom: 15px;
-                text-align: left;
-                transition: 0.3s ease;
-            }
-            .card:hover {
-                border-color: var(--text-main);
-                background: var(--card-bg);
-            }
-            .card h2 {
-                font-size: 0.9rem;
-                margin-bottom: 8px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .card p {
-                color: var(--text-dim);
-                font-size: 0.95rem;
-                line-height: 1.6;
-            }
-
-            .footer-actions {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                justify-content: center;
-                margin-top: 30px;
-            }
-            .btn {
-                padding: 15px 30px;
-                border-radius: 15px;
-                text-decoration: none;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                transition: 0.3s;
-            }
-            .btn-primary {
-                background: var(--text-main);
-                color: var(--bg);
-            }
-            .btn-secondary {
-                border: 1px solid var(--border);
-                color: var(--text-main);
-            }
-            .btn:hover {
-                transform: translateY(-3px);
-            }
-
-            #discord-status {
-                margin-top: 30px;
-                font-size: 0.75rem;
-                color: var(--text-dim);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-            }
-            .dot {
-                width: 8px;
-                height: 8px;
-                background: #444;
-                border-radius: 50%;
-            }
-            .online {
-                background: #43b581;
-                box-shadow: 0 0 10px #43b581;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="grid-bg"></div>
-        <div class="orb"></div>
-
-        <button id="theme-toggle"><i data-lucide="moon"></i></button>
-
-        <div class="container">
-            <header>
-                <div class="avatar">IP</div>
-                <h1>ironpan2</h1>
-                <span class="badge">CEO @ Ironpan Softworks</span>
-            </header>
-
-            <div class="card">
-                <h2><i data-lucide="user"></i> ABOUT</h2>
-                <p>
-                    Hello I am ironpan2. I am a master paster and skider. I am
-                    an expert of pasting from random github repos and leaked
-                    source code. I know python and I am learning rust.
-                </p>
-            </div>
-
-            <div class="card">
-                <h2><i data-lucide="terminal"></i> Ironc</h2>
-                <p>
-                    A calc written in rust that has adding ,subtracting ,mutiplication ,division squaring and square rooting.
-                </p>
-            </div>
-
-            <div class="card">
-                <h2><i data-lucide="gamepad-2"></i> INTERESTS</h2>
-                <p>
-                    CS2 • ROBLOX • STRAFTAT • Reverse Engineering • Game
-                    Cheating.
-                </p>
-            </div>
-
-            <div class="footer-actions">
-                <a
-                    href="https://discord.gg/BGmDcqwW9g"
-                    class="btn btn-primary"
-                    target="_blank"
-                    ><i data-lucide="message-square"></i> DISCORD</a
-                >
-                <a href="#" class="btn btn-secondary"
-                    ><i data-lucide="github"></i> GITHUB</a
-                >
-            </div>
-
-            <div id="discord-status">
-                <div class="dot" id="dot"></div>
-                <span id="status-text">CONNECTING...</span>
-            </div>
+    <div id="terminal">
+        <div class="output system-msg">
+Ironpan Softworks(TM) Kernel Booting...
+Version 1.0.2-RUST_LEARNER
+Connected to: ironpan2.vercel.app
+Type 'help' to see available commands.
         </div>
+        
+        <div id="input-container" class="input-line">
+            <span class="prompt">ironpan2@guest:~$</span>
+            <input type="text" id="command-input" autofocus autocomplete="off" spellcheck="false">
+        </div>
+    </div>
 
-        <script>
-            lucide.createIcons();
+    <script>
+        const terminal = document.getElementById('terminal');
+        const inputContainer = document.getElementById('input-container');
+        const input = document.getElementById('command-input');
 
-            const toggle = document.getElementById("theme-toggle");
-            let isDark = true;
-            toggle.addEventListener("click", () => {
-                isDark = !isDark;
-                document.body.setAttribute(
-                    "data-theme",
-                    isDark ? "dark" : "light",
-                );
-                toggle.innerHTML = isDark
-                    ? '<i data-lucide="moon"></i>'
-                    : '<i data-lucide="sun"></i>';
-                lucide.createIcons();
-            });
+        const COMMANDS = {
+            help: "Available commands: <br> - <span class='command-text'>whoisironpan</span>: About me <br> - <span class='command-text'>projects</span>: View my projects <br> - <span class='command-text'>discord</span>: Join the server <br> - <span class='command-text'>github</span>: View my code <br> - <span class='command-text'>clear</span>: Clean the screen",
+            whoisironpan: "Hello, I am ironpan2. I like computers game cheating and sometimes chess. I know some basic python and I am learning rust.",
+            projects: "My Projects: <br> - <span class='command-text'>Ironc</span>: A simple cli calculator in rust it can add, multiply, subtract, divide, square, and square root you can see and download the code if you go to my github.",
+            discord: "Redirecting to Discord...",
+            github: "Opening GitHub Profile...",
+            clear: "clear"
+        };
 
-            const DISCORD_ID = "1226159833779011636";
-            async function getStatus() {
-                try {
-                    const r = await fetch(
-                        `https://api.lanyard.rest/v1/users/${DISCORD_ID}`,
-                    );
-                    const d = await r.json();
-                    if (d.success) {
-                        const s = d.data.discord_status;
-                        document.getElementById("status-text").innerText =
-                            `CEO STATUS: ${s.toUpperCase()}`;
-                        document.getElementById("dot").className =
-                            s !== "offline" ? "dot online" : "dot";
-                    }
-                } catch (e) {
-                    console.error("Lanyard Error");
+        const LINKS = {
+            discord: "https://discord.gg/BGmDcqwW9g",
+            github: "https://github.com/Ironpan2"
+        };
+
+        function printLine(text) {
+            const div = document.createElement('div');
+            div.className = 'output';
+            div.innerHTML = text;
+            terminal.insertBefore(div, inputContainer);
+        }
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const fullCommand = input.value.trim().toLowerCase();
+                
+                // Print the prompt and what the user typed
+                printLine(`<span class="prompt">ironpan2@guest:~$</span> <span style="color: #ffffff;">${fullCommand}</span>`);
+                
+                // Secret destructive command check
+                if (fullCommand.includes('rm -rf') || fullCommand.includes('rm -f *')) {
+                    printLine("rm: removing root filesystem...");
+                    input.disabled = true; // Lock the terminal
+                    
+                    // Simulate deletion and crash
+                    setTimeout(() => {
+                        document.body.innerHTML = ""; // Deletes everything
+                        document.body.style.backgroundColor = "#000000";
+                        
+                        // Fake Kernel Panic
+                        setTimeout(() => {
+                            document.body.innerHTML = `
+                                <div style='color: red; padding: 20px; font-family: monospace; z-index: 10; position: relative;'>
+                                    [  1.002341] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)<br>
+                                    [  1.002385] CPU: 0 PID: 1 Comm: init Not tainted 5.15.0-generic<br>
+                                    [  1.002411] Hardware name: Ironpan Softworks Virtual Machine<br>
+                                    [  1.002444] Call Trace:<br>
+                                    [  1.002480]  dump_stack+0x10/0x20<br>
+                                    [  1.002521]  panic+0x120/0x2a0<br>
+                                    SYSTEM HALTED.
+                                </div>`;
+                        }, 500);
+                    }, 800);
+                    return;
                 }
+
+                // Normal command execution
+                if (COMMANDS[fullCommand]) {
+                    if (fullCommand === 'clear') {
+                        const allOutputs = document.querySelectorAll('.output:not(.system-msg)');
+                        allOutputs.forEach(el => el.remove());
+                    } else {
+                        printLine(COMMANDS[fullCommand]);
+                        
+                        if (LINKS[fullCommand]) {
+                            setTimeout(() => {
+                                window.open(LINKS[fullCommand], '_blank');
+                            }, 1000);
+                        }
+                    }
+                } else if (fullCommand !== "") {
+                    printLine(`Command not found: ${fullCommand}. Type 'help' for assistance.`);
+                }
+
+                input.value = '';
+                window.scrollTo(0, document.body.scrollHeight);
             }
-            getStatus();
-            setInterval(getStatus, 15000);
-        </script>
-    </body>
+        });
+
+        document.addEventListener('click', () => input.focus());
+    </script>
+</body>
 </html>
