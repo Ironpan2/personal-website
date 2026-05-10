@@ -1,188 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ironpan OS | Terminal</title>
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --text: #ffffff; /* Changed to stark white */
-            --dim: #cccccc; /* Light grey for standard output */
-            --font: 'Courier New', Courier, monospace;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Mother's Day</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Pinyon+Script&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: var(--font);
-            margin: 0;
-            padding: 20px;
-            height: 100vh;
-            box-sizing: border-box;
-            overflow-y: auto; 
-            scrollbar-width: thin;
-            scrollbar-color: var(--dim) var(--bg);
-        }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fdf6ee;
+      font-family: 'Cormorant Garamond', serif;
+      overflow: hidden;
+    }
 
-        #terminal {
-            white-space: pre-wrap;
-            display: flex;
-            flex-direction: column;
-        }
+    /* Soft petal background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 10% 20%, rgba(255, 200, 180, 0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 80%, rgba(210, 170, 200, 0.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 230, 210, 0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-        }
+    .card {
+      position: relative;
+      width: 680px;
+      max-width: 95vw;
+      background: #fff9f4;
+      border: 1.5px solid rgba(200, 160, 140, 0.3);
+      border-radius: 4px;
+      padding: 60px 64px 52px;
+      box-shadow:
+        0 2px 40px rgba(180, 120, 100, 0.08),
+        0 0 0 8px rgba(255, 245, 238, 0.9),
+        0 0 0 10px rgba(200, 160, 140, 0.15);
+      animation: fadeUp 1.2s ease both;
+    }
 
-        .prompt {
-            color: var(--text);
-            margin-right: 10px;
-            font-weight: bold;
-        }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-        #command-input {
-            background: transparent;
-            border: none;
-            color: var(--text);
-            font-family: var(--font);
-            font-size: 1rem;
-            outline: none;
-            flex-grow: 1;
-        }
+    /* Corner florals */
+    .card::before, .card::after {
+      content: '✿';
+      position: absolute;
+      font-size: 22px;
+      color: rgba(200, 140, 120, 0.35);
+    }
+    .card::before { top: 18px; left: 22px; }
+    .card::after  { bottom: 18px; right: 22px; transform: rotate(180deg); }
 
-        .output {
-            margin-top: 5px;
-            color: var(--dim);
-            line-height: 1.4;
-        }
+    .top-flourish {
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #c4947a;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s both;
+    }
 
-        .command-text {
-            color: var(--text);
-            font-weight: bold;
-        }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.5s both;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(190, 140, 120, 0.4), transparent);
+    }
+    .divider span {
+      color: #c4947a;
+      font-size: 16px;
+    }
 
-        .system-msg {
-            color: #ffffff;
-            opacity: 0.8;
-            margin-bottom: 15px;
-        }
+    .headline {
+      font-family: 'Pinyon Script', cursive;
+      font-size: clamp(48px, 8vw, 74px);
+      color: #8b3a2a;
+      text-align: center;
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+      opacity: 0;
+      animation: fadeUp 1.1s ease 0.6s both;
+    }
 
-        /* CRT Scanline effect */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
-    </style>
+    .subline {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: #b87060;
+      text-align: center;
+      margin-top: 6px;
+      letter-spacing: 0.06em;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.85s both;
+    }
+
+    .message-area {
+      margin-top: 36px;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.05s both;
+    }
+
+    .message-area label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #c4947a;
+      margin-bottom: 10px;
+    }
+
+    .message-area textarea {
+      width: 100%;
+      min-height: 160px;
+      border: 1px solid rgba(190, 140, 120, 0.3);
+      border-radius: 3px;
+      background: rgba(255, 248, 242, 0.6);
+      padding: 18px 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: #5a3428;
+      line-height: 1.75;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .message-area textarea::placeholder {
+      color: rgba(180, 130, 110, 0.45);
+    }
+
+    .message-area textarea:focus {
+      border-color: rgba(190, 100, 80, 0.45);
+      box-shadow: 0 0 0 3px rgba(200, 120, 90, 0.07);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 36px;
+      font-size: 13px;
+      letter-spacing: 0.25em;
+      color: rgba(160, 110, 90, 0.55);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s both;
+    }
+
+    @media print {
+      body { background: white; }
+      body::before { display: none; }
+      .card { box-shadow: none; border: 1px solid #ddd; }
+    }
+  </style>
 </head>
 <body>
 
-    <div id="terminal">
-        <div class="output system-msg">
-Ironpan Softworks(TM) Kernel Booting...
-Version 1.0.2-RUST_LEARNER
-Connected to: ironpan2.vercel.app
-Type 'help' to see available commands.
-        </div>
-        
-        <div id="input-container" class="input-line">
-            <span class="prompt">ironpan2@guest:~$</span>
-            <input type="text" id="command-input" autofocus autocomplete="off" spellcheck="false">
-        </div>
+  <div class="card">
+    <p class="top-flourish">With all my love</p>
+
+    <div class="divider"><span>✦</span></div>
+
+    <h1 class="headline">Happy Mother's Day,<br>Momma!</h1>
+    <p class="subline">Today and every day, you are so loved.</p>
+
+    <div class="divider"><span>✦</span></div>
+
+    <div class="message-area">
+      <label>A note from the heart</label>
+      <textarea>Thank you Momma for everything you have done for me. I really appreciate all the things you have done for me. I really do love you truly — thank you for all the things you have done for me, and I hope you have a wonderful Mother's Day!</textarea>
     </div>
 
-    <script>
-        const terminal = document.getElementById('terminal');
-        const inputContainer = document.getElementById('input-container');
-        const input = document.getElementById('command-input');
+    <p class="footer">— With love, P.B. —</p>
+  </div>
 
-        const COMMANDS = {
-            help: "Available commands: <br> - <span class='command-text'>whoisironpan</span>: About me <br> - <span class='command-text'>projects</span>: View my projects <br> - <span class='command-text'>discord</span>: Join the server <br> - <span class='command-text'>github</span>: View my code <br> - <span class='command-text'>clear</span>: Clean the screen",
-            whoisironpan: "Hello, I am ironpan2. I like computers game cheating and sometimes chess. I know some basic python and I am learning rust.",
-            projects: "My Projects: <br> - <span class='command-text'>Ironc</span>: A simple cli calculator in rust it can add, multiply, subtract, divide, square, and square root you can see and download the code if you go to my github.",
-            discord: "Redirecting to Discord...",
-            github: "Opening GitHub Profile...",
-            clear: "clear"
-        };
-
-        const LINKS = {
-            discord: "https://discord.gg/BGmDcqwW9g",
-            github: "https://github.com/Ironpan2"
-        };
-
-        function printLine(text) {
-            const div = document.createElement('div');
-            div.className = 'output';
-            div.innerHTML = text;
-            terminal.insertBefore(div, inputContainer);
-        }
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const fullCommand = input.value.trim().toLowerCase();
-                
-                // Print the prompt and what the user typed
-                printLine(`<span class="prompt">ironpan2@guest:~$</span> <span style="color: #ffffff;">${fullCommand}</span>`);
-                
-                // Secret destructive command check
-                if (fullCommand.includes('rm -rf') || fullCommand.includes('rm -f *')) {
-                    printLine("rm: removing root filesystem...");
-                    input.disabled = true; // Lock the terminal
-                    
-                    // Simulate deletion and crash
-                    setTimeout(() => {
-                        document.body.innerHTML = ""; // Deletes everything
-                        document.body.style.backgroundColor = "#000000";
-                        
-                        // Fake Kernel Panic
-                        setTimeout(() => {
-                            document.body.innerHTML = `
-                                <div style='color: red; padding: 20px; font-family: monospace; z-index: 10; position: relative;'>
-                                    [  1.002341] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)<br>
-                                    [  1.002385] CPU: 0 PID: 1 Comm: init Not tainted 5.15.0-generic<br>
-                                    [  1.002411] Hardware name: Ironpan Softworks Virtual Machine<br>
-                                    [  1.002444] Call Trace:<br>
-                                    [  1.002480]  dump_stack+0x10/0x20<br>
-                                    [  1.002521]  panic+0x120/0x2a0<br>
-                                    SYSTEM HALTED.
-                                </div>`;
-                        }, 500);
-                    }, 800);
-                    return;
-                }
-
-                // Normal command execution
-                if (COMMANDS[fullCommand]) {
-                    if (fullCommand === 'clear') {
-                        const allOutputs = document.querySelectorAll('.output:not(.system-msg)');
-                        allOutputs.forEach(el => el.remove());
-                    } else {
-                        printLine(COMMANDS[fullCommand]);
-                        
-                        if (LINKS[fullCommand]) {
-                            setTimeout(() => {
-                                window.open(LINKS[fullCommand], '_blank');
-                            }, 1000);
-                        }
-                    }
-                } else if (fullCommand !== "") {
-                    printLine(`Command not found: ${fullCommand}. Type 'help' for assistance.`);
-                }
-
-                input.value = '';
-                window.scrollTo(0, document.body.scrollHeight);
-            }
-        });
-
-        document.addEventListener('click', () => input.focus());
-    </script>
 </body>
 </html>
